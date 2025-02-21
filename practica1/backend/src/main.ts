@@ -15,6 +15,12 @@ async function bootstrap() {
     })
   );
 
+  app.enableCors({
+    origin: '*', // Permitir todas las solicitudes (puedes restringir a dominios específicos)
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+  });
+
   await app.listen(process.env.PORT);
   logger.log(`App running on PORT: ${ process.env.PORT }`);
 }
