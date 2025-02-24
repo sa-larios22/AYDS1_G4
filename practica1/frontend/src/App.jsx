@@ -1,14 +1,30 @@
-import { useState } from 'react'
-
-import React from 'react'
-import FlightStatus from './components/FlightStatus'
+import { useState } from "react";
+import { Box, createTheme, Stack, ThemeProvider } from "@mui/material";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import Feed from "./components/Feed";
+import FlightStatus from "./components/FlightStatus";
 
 export const App = () => {
-  
+  const [mode, setMode] = useState("light");
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: mode,
+    },
+  });
+
   return (
-    <>
-      <h1>React App 1</h1>
-      <FlightStatus />
-    </>
-  )
-}
+    <ThemeProvider theme={darkTheme}>
+      <Box bgcolor={"background.default"} color={"text.primary"}>
+        <Navbar />
+        <Stack direction="row" spacing={2} justifyContent="space-between">
+          <Sidebar setMode={setMode} mode={mode} />
+          <Feed />
+        </Stack>
+      </Box>
+    </ThemeProvider>
+  );
+};
+
+export default App;
