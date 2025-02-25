@@ -33,8 +33,8 @@ model User {
 
   role Role @default(USER)
 
-  orders  Order[]
-  Ticket  Ticket[]
+  orders Order[]
+  Ticket Ticket[]
 }
 
 model Gate {
@@ -111,6 +111,7 @@ model Order {
   user   User @relation(fields: [userId], references: [id])
 
   details OrderDetail[]
+  payment Payment?
 }
 
 model OrderDetail {
@@ -135,10 +136,11 @@ enum PaymentType {
 }
 
 model Payment {
-  id Int @id @default(autoincrement())
-
+  id     Int         @id @default(autoincrement())
   amount Float
   date   DateTime
-
   type   PaymentType @default(CASH)
+
+  orderId Int   @unique
+  order   Order @relation(fields: [orderId], references: [id])
 }
