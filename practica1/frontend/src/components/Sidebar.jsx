@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
     AccountBox,
     Work,
@@ -20,6 +21,7 @@ import {
   import React from "react";
   
   const Sidebar = ({mode,setMode}) => {
+    const navigate = useNavigate();
     return (
       <Box flex={1} p={2} sx={{ display: { xs: "none", sm: "block" } }}>
         <Box position="fixed">
@@ -33,7 +35,7 @@ import {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton component="a" href="#simple-list">
+              <ListItemButton onClick={() => navigate("/comprar")}>
                 <ListItemIcon>
                   <Work />
                 </ListItemIcon>
@@ -41,7 +43,7 @@ import {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton component="a" href="#simple-list">
+              <ListItemButton onClick={() => navigate("/estado_vuelos")}>
                 <ListItemIcon>
                   <AirplanemodeActive />
                 </ListItemIcon>
