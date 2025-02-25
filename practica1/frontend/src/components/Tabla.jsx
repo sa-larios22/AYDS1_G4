@@ -15,21 +15,26 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Button from '@mui/material/Button';
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Grow from "@mui/material/Grow";
+import Popper from "@mui/material/Popper";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
 
+const ticketClasses = ["Económica", "Ejecutiva", "Primera Clase"];
 
-function createData(name, tipo, boletosd, buttonText) {
+function createData(name, boletosd) {
   return {
     name,
-    tipo,
     boletosd,
-    buttonText,
     history: [
       {
         date: '2020-01-05',
         time: '10:00 AM',
         price: 240,
       },
-      
     ],
   };
 }
@@ -37,6 +42,18 @@ function createData(name, tipo, boletosd, buttonText) {
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
+  const [selectedClassIndex, setSelectedClassIndex] = React.useState(0);
+  const anchorRef = React.useRef(null);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+
+  const handleToggle = () => {
+    setMenuOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleMenuItemClick = (index) => {
+    setSelectedClassIndex(index);
+    setMenuOpen(false);
+  };
 
   return (
     <React.Fragment>
@@ -53,13 +70,45 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row.name}
         </TableCell>
-        <TableCell align="right">{row.tipo}</TableCell>
-        <TableCell align="right">{row.boletosd}</TableCell>
         <TableCell align="right">
-        <IconButton color="primary">
-        <AddShoppingCartIcon />
-        {row.buttonText}
-        </IconButton>
+          <ButtonGroup variant="contained" ref={anchorRef}>
+            <Button>{ticketClasses[selectedClassIndex]}</Button>
+            <Button
+              size="small"
+              aria-haspopup="menu"
+              onClick={handleToggle}
+            >
+              <ArrowDropDownIcon />
+            </Button>
+          </ButtonGroup>
+          <Popper open={menuOpen} anchorEl={anchorRef.current} transition>
+            {({ TransitionProps }) => (
+              <Grow {...TransitionProps}>
+                <Paper>
+                  <ClickAwayListener onClickAway={() => setMenuOpen(false)}>
+                    <MenuList>
+                      {ticketClasses.map((option, index) => (
+                        <MenuItem
+                          key={option}
+                          selected={index === selectedClassIndex}
+                          onClick={() => handleMenuItemClick(index)}
+                        >
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
+        </TableCell>
+        <TableCell align="center">{row.boletosd[selectedClassIndex]}</TableCell>
+        <TableCell align="right">
+          <IconButton color="primary">
+            <AddShoppingCartIcon />
+            Comprar
+          </IconButton>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -73,11 +122,8 @@ function Row(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Fecha de Salida</TableCell>
-                    
                     <TableCell align="right">Hora</TableCell>
-                    <TableCell align="right">Precio ($)
-                    
-                    </TableCell>
+                    <TableCell align="right">Precio ($)</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -102,34 +148,34 @@ function Row(props) {
 
 Row.propTypes = {
   row: PropTypes.shape({
-    tipo: PropTypes.string.isRequired,
-    boletosd: PropTypes.number.isRequired,
+    boletosd: PropTypes.arrayOf(PropTypes.number).isRequired,
     history: PropTypes.arrayOf(
       PropTypes.shape({
-        time: PropTypes.number.isRequired,
+        time: PropTypes.string.isRequired,
         date: PropTypes.string.isRequired,
-      }),
+        price: PropTypes.number.isRequired,
+      })
     ).isRequired,
     name: PropTypes.string.isRequired,
   }).isRequired,
 };
 
 const rows = [
-  createData('Dubai', 'Primera Clase', 6, 'Comprar'),
-  createData('Francia', 'Clase Ejecutiva', 16, 'Comprar'),
+  createData('Dubai', [6, 4, 2]),
+  createData('Francia', [16, 10, 5]),
 ];
 
 export default function CollapsibleTable() {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
+      <TableHead>
+          <TableRow sx={{ backgroundColor: '#1976d2' }}>
             <TableCell />
-            <TableCell>Destino</TableCell>
-            <TableCell align="right">Tipo</TableCell>
-            <TableCell align="right">Boletos Disponibles&nbsp;</TableCell>
-            <TableCell align="right">Boleto</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Destino</TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Tipo</TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Boletos Disponibles</TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Boleto</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

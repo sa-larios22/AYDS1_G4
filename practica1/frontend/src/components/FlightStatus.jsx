@@ -1,47 +1,209 @@
-import { useEffect, useState } from 'react';
-import { fetchFlights } from '../api/fetchFlights';
+import { useEffect, useState, useRef } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Typography,
+  Button,
+  ButtonGroup,
+  ClickAwayListener,
+  Grow,
+  Popper,
+  MenuItem,
+  MenuList,
+} from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+
+const ticketClasses = ["Económica", "Ejecutiva", "Primera Clase"];
+const ticketKeys = ["economy", "business", "firstClass"];
 
 const FlightStatus = () => {
   const [flights, setFlights] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedClasses, setSelectedClasses] = useState({});
+  const menuRefs = useRef({});
 
   useEffect(() => {
-    fetchFlights().then(setFlights).catch(console.error);
+    const mockFlights = [
+      {
+        id: 1,
+        origin: "Ciudad de México (MEX)",
+        destination: "Nueva York (JFK)",
+        departure: "2025-02-25T08:30:00",
+        arrival: "2025-02-25T14:15:00",
+        status: "Programado",
+        gate: { name: "A1" },
+        seats: {
+          economy: { price: 350, sold: 100, capacity: 120 },
+          business: { price: 700, sold: 30, capacity: 40 },
+          firstClass: { price: 1200, sold: 5, capacity: 10 },
+        },
+      },
+      {
+        id: 2,
+        origin: "Londres (LHR)",
+        destination: "Madrid (MAD)",
+        departure: "2025-02-25T10:00:00",
+        arrival: "2025-02-25T12:30:00",
+        status: "En puerta",
+        gate: { name: "B3" },
+        seats: {
+          economy: { price: 200, sold: 80, capacity: 100 },
+          business: { price: 500, sold: 20, capacity: 30 },
+          firstClass: { price: 900, sold: 10, capacity: 15 },
+        },
+      },
+      {
+        id: 3,
+        origin: "Tokio (HND)",
+        destination: "Los Ángeles (LAX)",
+        departure: "2025-02-26T16:45:00",
+        arrival: "2025-02-26T08:20:00",
+        status: "Aterrizó",
+        gate: { name: "C5" },
+        seats: {
+          economy: { price: 400, sold: 150, capacity: 180 },
+          business: { price: 850, sold: 40, capacity: 50 },
+          firstClass: { price: 1300, sold: 8, capacity: 15 },
+        },
+      },
+    ];
+
+    setTimeout(() => {
+      setFlights(mockFlights);
+      setLoading(false);
+    }, 1000);
+
+    // Inicializar estado de selección por vuelo
+    setSelectedClasses(
+      mockFlights.reduce((acc, flight) => {
+        acc[flight.id] = 0; // Inicia con clase económica (índice 0)
+        return acc;
+      }, {})
+    );
+
+    menuRefs.current = mockFlights.reduce((acc, flight) => {
+      acc[flight.id] = { anchorRef: null, open: false };
+      return acc;
+    }, {});
   }, []);
 
+  const handleToggle = (flightId) => {
+    menuRefs.current[flightId].open = !menuRefs.current[flightId].open;
+    setSelectedClasses({ ...selectedClasses });
+  };
+
+  const handleMenuItemClick = (flightId, index) => {
+    selectedClasses[flightId] = index;
+    menuRefs.current[flightId].open = false;
+    setSelectedClasses({ ...selectedClasses });
+  };
+
   return (
-    <div>
-      <h2>Estado de Vuelos</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Origen</th>
-            <th>Destino</th>
-            <th>Salida</th>
-            <th>Llegada</th>
-            <th>Precio</th>
-            <th>Estado</th>
-            <th>Puerta</th>
-            <th>Boletos Vendidos</th>
-          </tr>
-        </thead>
-        <tbody>
-          {flights.map(flight => (
-            <tr key={flight.id}>
-              <td>{flight.id}</td>
-              <td>{flight.origin}</td>
-              <td>{flight.destination}</td>
-              <td>{new Date(flight.departure).toLocaleString()}</td>
-              <td>{new Date(flight.arrival).toLocaleString()}</td>
-              <td>${flight.price}</td>
-              <td>{flight.status}</td>
-              <td>{flight.gate?.name || "No asignada"}</td>
-              <td>{flight.soldTickets}/{flight.maxPassengers}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <TableContainer component={Paper} sx={{ mt: 3, p: 2 }}>
+      <Typography variant="h5" gutterBottom>
+        Estado de Vuelos
+      </Typography>
+
+      {loading ? (
+        <CircularProgress />
+      ) : error ? (
+        <Typography color="error">{error}</Typography>
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#1976d2' }}>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Origen</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Destino</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Salida</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Llegada</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Estado</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Puerta</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Clase</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Precio</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Boletos Vendidos</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {flights.map((flight) => {
+              const classIndex = selectedClasses[flight.id];
+              const classKey = ticketKeys[classIndex];
+              const seatInfo = flight.seats[classKey];
+
+              return (
+                <TableRow key={flight.id}>
+                  <TableCell>{flight.id}</TableCell>
+                  <TableCell>{flight.origin}</TableCell>
+                  <TableCell>{flight.destination}</TableCell>
+                  <TableCell>{new Date(flight.departure).toLocaleString()}</TableCell>
+                  <TableCell>{new Date(flight.arrival).toLocaleString()}</TableCell>
+                  <TableCell>{flight.status}</TableCell>
+                  <TableCell>{flight.gate?.name || "No asignada"}</TableCell>
+                  <TableCell>
+                    <ButtonGroup variant="contained" ref={(el) => (menuRefs.current[flight.id].anchorRef = el)}>
+                      <Button>{ticketClasses[classIndex]}</Button>
+                      <Button
+                        size="small"
+                        aria-controls={menuRefs.current[flight.id].open ? "split-button-menu" : undefined}
+                        aria-expanded={menuRefs.current[flight.id].open ? "true" : undefined}
+                        aria-haspopup="menu"
+                        onClick={() => handleToggle(flight.id)}
+                      >
+                        <ArrowDropDownIcon />
+                      </Button>
+                    </ButtonGroup>
+                    <Popper
+                      sx={{ zIndex: 1 }}
+                      open={menuRefs.current[flight.id].open}
+                      anchorEl={menuRefs.current[flight.id].anchorRef}
+                      role={undefined}
+                      transition
+                      disablePortal
+                    >
+                      {({ TransitionProps, placement }) => (
+                        <Grow
+                          {...TransitionProps}
+                          style={{
+                            transformOrigin: placement === "bottom" ? "center top" : "center bottom",
+                          }}
+                        >
+                          <Paper>
+                            <ClickAwayListener onClickAway={() => handleToggle(flight.id)}>
+                              <MenuList id="split-button-menu" autoFocusItem>
+                                {ticketClasses.map((option, index) => (
+                                  <MenuItem
+                                    key={option}
+                                    selected={index === classIndex}
+                                    onClick={() => handleMenuItemClick(flight.id, index)}
+                                  >
+                                    {option}
+                                  </MenuItem>
+                                ))}
+                              </MenuList>
+                            </ClickAwayListener>
+                          </Paper>
+                        </Grow>
+                      )}
+                    </Popper>
+                  </TableCell>
+                  <TableCell>${seatInfo.price}</TableCell>
+                  <TableCell>
+                    {seatInfo.sold}/{seatInfo.capacity}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      )}
+    </TableContainer>
   );
 };
 
