@@ -33,9 +33,8 @@ model User {
 
   role Role @default(USER)
 
-  tickets Ticket[]
-
-  payments Payment[]
+  orders  Order[]
+  Ticket  Ticket[]
 }
 
 model Gate {
@@ -57,18 +56,17 @@ model Flight {
   origin      String
   destination String
 
-  departure DateTime
-  arrival   DateTime
-  price     Float
-  status    Status   @default(SCHEDULED)
+  departure     DateTime
+  arrival       DateTime
+  price         Float
+  status        Status   @default(SCHEDULED)
   maxPassengers Int
-  soldTickets Int
+  soldTickets   Int
 
   GateId Int?
-  gate Gate? @relation(fields: [GateId], references: [id])
+  gate   Gate? @relation(fields: [GateId], references: [id])
 
   tickets Ticket[]
-
 }
 
 enum TicketStatus {
@@ -85,17 +83,49 @@ enum TicketType {
 model Ticket {
   id Int @id @default(autoincrement())
 
-  status TicketStatus @default(SOLD)
+  type  TicketType @default(ECONOMY)
+  price Float
 
-  type TicketType @default(ECONOMY)
+  availableSeats Int
+  soldSeats      Int
+  totalSeats     Int
+
+  active Boolean @default(true)
+
+  created_by Int
+  User       User @relation(fields: [created_by], references: [id])
 
   flightId Int
-  flight Flight @relation(fields: [flightId], references: [id])
+  flight   Flight @relation(fields: [flightId], references: [id])
+
+  details OrderDetail[]
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  amount Int   @default(0)
+  total  Float @default(0)
 
   userId Int
-  user User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
 
-  payment Payment?
+  details OrderDetail[]
+}
+
+model OrderDetail {
+  id Int @id @default(autoincrement())
+
+  quantity Int
+  price    Float
+
+  status TicketStatus @default(AVAILABLE)
+
+  orderId Int
+  order   Order @relation(fields: [orderId], references: [id])
+
+  ticketId Int
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
 }
 
 enum PaymentType {
@@ -110,11 +140,5 @@ model Payment {
   amount Float
   date   DateTime
 
-  type PaymentType @default(CASH)
-
-  userId Int
-  user User @relation(fields: [userId], references: [id])
-
-  ticketId Int @unique
-  ticket Ticket @relation(fields: [ticketId], references: [id])
+  type   PaymentType @default(CASH)
 }

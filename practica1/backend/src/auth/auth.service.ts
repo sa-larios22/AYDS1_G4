@@ -100,7 +100,6 @@ export class AuthService extends PrismaClient implements OnModuleInit  {
   }
 
   async findAll( paginationDto: PaginationDto ) {
-    console.log(paginationDto);
     const { limit = 10, offset = 0 } = paginationDto;
 
     const users = await this.user.findMany({

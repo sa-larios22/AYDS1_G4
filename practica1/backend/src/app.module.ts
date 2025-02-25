@@ -4,6 +4,7 @@ import { FlightsModule } from './flights/flights.module';
 import { GatesModule } from './gates/gates.module';
 import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
+import { TicketModule } from './ticket/ticket.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { CommonModule } from './common/common.module';
     FlightsModule, 
     GatesModule,
     ConfigModule.forRoot(),
-    CommonModule
+    CommonModule,
+    TicketModule
   
   ]
 })
