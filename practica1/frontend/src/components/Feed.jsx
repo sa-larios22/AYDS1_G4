@@ -1,4 +1,4 @@
-import { Box, Stack, Skeleton } from "@mui/material";
+import { Box, Skeleton, Stack } from "@mui/material";
 import React, { useState } from "react";
 import Comprar from "./Comprar";
 

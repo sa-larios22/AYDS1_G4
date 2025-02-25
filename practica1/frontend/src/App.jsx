@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Box, createTheme, Stack, ThemeProvider } from "@mui/material";
+import { useState } from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom"; // Asegúrate de usar BrowserRouter y Routes
+import Feed from "./components/Feed";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-import Feed from "./components/Feed";
-import FlightStatus from "./components/FlightStatus";
 
 export const App = () => {
   const [mode, setMode] = useState("light");
@@ -14,15 +14,23 @@ export const App = () => {
     },
   });
 
+
+
   return (
     <ThemeProvider theme={darkTheme}>
-      <Box bgcolor={"background.default"} color={"text.primary"}>
-        <Navbar />
-        <Stack direction="row" spacing={2} justifyContent="space-between">
-          <Sidebar setMode={setMode} mode={mode} />
-          <Feed />
-        </Stack>
-      </Box>
+      <Router>
+        <Box bgcolor={"background.default"} color={"text.primary"}>
+          <Navbar />
+          <Stack direction="row" spacing={2} justifyContent="space-between">
+            <Sidebar setMode={setMode} mode={mode} />
+            <Routes>
+              <Route path="/" element={<Feed />} />
+              <Route path="/comprar" element={<Feed />} />
+            </Routes>
+          </Stack>
+        </Box>
+      </Router>
+      
     </ThemeProvider>
   );
 };

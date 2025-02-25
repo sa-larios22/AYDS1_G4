@@ -1,23 +1,24 @@
 import {
-    AccountBox,
-    Work,
-    AirplanemodeActive,
-    Home,
-    ModeNight,
-    History,
-    Settings,
-    AirplaneTicket,
-  } from "@mui/icons-material";
-  import {
-    Box,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Switch,
-  } from "@mui/material";
-  import React from "react";
+  AccountBox,
+  AirplanemodeActive,
+  AirplaneTicket,
+  History,
+  Home,
+  ModeNight,
+  Settings,
+  Work,
+} from "@mui/icons-material";
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Switch,
+} from "@mui/material";
+import React from "react";
+import { Link } from "react-router-dom";
   
   const Sidebar = ({mode,setMode}) => {
     return (
@@ -25,7 +26,7 @@ import {
         <Box position="fixed">
           <List>
             <ListItem disablePadding>
-              <ListItemButton component="a" href="#home">
+              <ListItemButton component={Link} to="/">
                 <ListItemIcon>
                   <Home />
                 </ListItemIcon>
@@ -33,7 +34,7 @@ import {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton component="a" href="#simple-list">
+              <ListItemButton component={Link} to="/comprar">
                 <ListItemIcon>
                   <Work />
                 </ListItemIcon>
@@ -41,7 +42,7 @@ import {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton component="a" href="#simple-list">
+              <ListItemButton component="a" href="#xd-list">
                 <ListItemIcon>
                   <AirplanemodeActive />
                 </ListItemIcon>
