@@ -1,39 +1,27 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Box, createTheme, Stack, ThemeProvider } from "@mui/material";
-import Navbar from "./components/Navbar";
-import Sidebar from "./components/Sidebar";
-import Feed from "./components/Feed";
-import FlightStatus from "./components/FlightStatus";
-import Comprar from "./components/Comprar";
+// src/App.jsx
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import Flights from './pages/Flights';
+import AdminDashboard from './pages/AdminDashboard';
+import ClientDashboard from './pages/ClientDashboard';
+import StaffDashboard from './pages/StaffDashboard';
+import { AuthProvider } from './context/AuthContext';
 
-export const App = () => {
-  const [mode, setMode] = useState("light");
-
-  const darkTheme = createTheme({
-    palette: {
-      mode: mode,
-    },
-  });
-
+const App = () => {
   return (
-    <ThemeProvider theme={darkTheme}>
-      <Router> {}
-        <Box bgcolor={"background.default"} color={"text.primary"}>
-          <Navbar />
-          <Stack direction="row" spacing={2} justifyContent="space-between">
-            <Sidebar setMode={setMode} mode={mode} />
-            <Box flex={4} p={2}>
-              <Routes>
-                <Route path="/" element={<Feed />} />
-                <Route path="/estado_vuelos" element={<FlightStatus />} />
-                <Route path="/comprar" element={<Comprar />} />
-              </Routes>
-            </Box>
-          </Stack>
-        </Box>
-      </Router> {}
-    </ThemeProvider>
+    <AuthProvider>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/flights" element={<Flights />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/client" element={<ClientDashboard />} />
+          <Route path="/staff" element={<StaffDashboard />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 };
 
