@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchFlights } from '../api/fetchFlights';
-import './FlightStatus.css'; // Importa el archivo de estilos
+import './Flight.css'; // Importa el archivo de estilos
 
 const FlightStatus = () => {
   const [flights, setFlights] = useState([]);

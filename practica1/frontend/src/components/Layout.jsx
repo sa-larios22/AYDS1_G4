@@ -1,8 +1,11 @@
 // src/components/Layout.jsx
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Layout = () => {
+  const { user } = useAuth();
+
   return (
     <div style={containerStyle}>
       {/* Encabezado fijo */}
@@ -15,36 +18,78 @@ const Layout = () => {
         <nav style={navStyle}>
           <ul style={menuListStyle}>
             <li style={menuItemStyle}>
-              <NavLink
-                to="/"
-                style={({ isActive }) =>
-                  isActive ? activeLinkStyle : linkStyle
-                }
-                end
-              >
+              <NavLink to="/" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle} end>
                 <span style={iconStyle}>🏠</span>Inicio
               </NavLink>
             </li>
             <li style={menuItemStyle}>
-              <NavLink
-                to="/flights"
-                style={({ isActive }) =>
-                  isActive ? activeLinkStyle : linkStyle
-                }
-              >
+              <NavLink to="/flights" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
                 <span style={iconStyle}>✈️</span>Vuelos
               </NavLink>
             </li>
-            <li style={menuItemStyle}>
-              <NavLink
-                to="/personal"
-                style={({ isActive }) =>
-                  isActive ? activeLinkStyle : linkStyle
-                }
-              >
-                <span style={iconStyle}>👥</span>Personal
-              </NavLink>
-            </li>
+
+            {/* Opciones para Administrador */}
+            {user?.role === 'admin' && (
+              <>
+                <li style={menuItemStyle}>
+                  <NavLink to="/admin" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
+                    <span style={iconStyle}>⚙️</span>Panel de Administración
+                  </NavLink>
+                </li>
+                <li style={menuItemStyle}>
+                  <NavLink to="/admin/users" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
+                    <span style={iconStyle}>👤</span>Gestión de Usuarios
+                  </NavLink>
+                </li>
+                <li style={menuItemStyle}>
+                  <NavLink to="/admin/payments" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
+                    <span style={iconStyle}>💵</span>Historial de Pagos
+                  </NavLink>
+                </li>
+              </>
+            )}
+
+            {/* Opciones para Cliente (Pasajero) */}
+            {user?.role === 'client' && (
+              <>
+                <li style={menuItemStyle}>
+                  <NavLink to="/client" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
+                    <span style={iconStyle}>🛒</span>Mi Cuenta
+                  </NavLink>
+                </li>
+                <li style={menuItemStyle}>
+                  <NavLink to="/client/tickets" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
+                    <span style={iconStyle}>🎟️</span>Mis Boletos
+                  </NavLink>
+                </li>
+                <li style={menuItemStyle}>
+                  <NavLink to="/client/history" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
+                    <span style={iconStyle}>📜</span>Historial de Compras
+                  </NavLink>
+                </li>
+              </>
+            )}
+
+            {/* Opciones para Personal */}
+            {user?.role === 'staff' && (
+              <>
+                <li style={menuItemStyle}>
+                  <NavLink to="/staff" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
+                    <span style={iconStyle}>👥</span>Panel de Personal
+                  </NavLink>
+                </li>
+                <li style={menuItemStyle}>
+                  <NavLink to="/staff/flights" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
+                    <span style={iconStyle}>🛫</span>Gestión de Vuelos
+                  </NavLink>
+                </li>
+                <li style={menuItemStyle}>
+                  <NavLink to="/staff/tickets" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
+                    <span style={iconStyle}>🎟️</span>Gestión de Boletos
+                  </NavLink>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
       </aside>
@@ -62,6 +107,7 @@ const Layout = () => {
   );
 };
 
+// Definición de estilos inline
 const containerStyle = {
   fontFamily: 'Arial, sans-serif',
   position: 'relative',
@@ -127,7 +173,7 @@ const iconStyle = {
 };
 
 const mainStyle = {
-  marginLeft: '240px', // ancho del sidebar + algo de margen
+  marginLeft: '240px', // ancho del sidebar + margen
   marginTop: '60px',
   marginBottom: '40px',
   padding: '20px'
