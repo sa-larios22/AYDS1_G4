@@ -51,7 +51,7 @@ import {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton component="a" href="#simple-list">
+              <ListItemButton onClick={() => navigate("/estado_boletos")}>
                 <ListItemIcon>
                   <AirplaneTicket />
                 </ListItemIcon>

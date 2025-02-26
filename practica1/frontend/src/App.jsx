@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Box, createTheme, Stack, ThemeProvider } from "@mui/material";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-import Feed from "./components/Feed";
-import FlightStatus from "./components/FlightStatus";
-import Comprar from "./components/Comprar";
+import Feed from "./interfaces/Feed";
+import FlightStatus from "./interfaces/FlightStatus";
+import Comprar from "./interfaces/Comprar";
+import TicketStatus from "./interfaces/TicketStatus";
 
 export const App = () => {
   const [mode, setMode] = useState("light");
@@ -26,8 +27,9 @@ export const App = () => {
             <Box flex={4} p={2}>
               <Routes>
                 <Route path="/" element={<Feed />} />
-                <Route path="/estado_vuelos" element={<FlightStatus />} />
                 <Route path="/comprar" element={<Comprar />} />
+                <Route path="/estado_vuel0os" element={<FlightStatus />} />
+                <Route path="/estado_boletos" element={<TicketStatus />} />
               </Routes>
             </Box>
           </Stack>

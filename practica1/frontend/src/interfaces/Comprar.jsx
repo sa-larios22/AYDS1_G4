@@ -10,7 +10,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import CollapsibleTable from "./Tabla";
+import CollapsibleTable from "../components/Tabla";
 const Comprar = () => {
   return (
     <Card sx={{ margin: 5 }}>
