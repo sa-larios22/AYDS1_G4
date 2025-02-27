@@ -1,13 +1,15 @@
 // src/App.jsx
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
-import Home from './pages/Home';
-import Flights from './pages/Flights';
+import { AuthProvider } from './context/AuthContext';
 import AdminDashboard from './pages/AdminDashboard';
 import ClientDashboard from './pages/ClientDashboard';
+import Flights from './pages/Flights';
+import Home from './pages/Home';
+import { LoginPage } from './pages/Login';
+import { RegisterPage } from './pages/Register';
 import StaffDashboard from './pages/StaffDashboard';
-import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   return (
@@ -19,6 +21,8 @@ const App = () => {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/client" element={<ClientDashboard />} />
           <Route path="/staff" element={<StaffDashboard />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Route>
       </Routes>
     </AuthProvider>
