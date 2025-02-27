@@ -4,11 +4,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   // Usuario simulado: cambia 'admin' por 'client' o 'staff' para probar cada rol.
-  const [user, setUser] = useState({
-    id: 1,
-    name: 'Usuario de Prueba',
-    role: 'client' // O 'client' o 'staff admin'
-  });
+  const [user, setUser] = useState(null);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
