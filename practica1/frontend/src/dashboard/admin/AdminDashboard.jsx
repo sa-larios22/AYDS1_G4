@@ -1,7 +1,4 @@
-// src/pages/AdminDashboard.jsx
-import React from 'react';
-
-const AdminDashboard = () => {
+export const AdminDashboard = () => {
   return (
     <div>
       <h2>Panel de Administración</h2>
@@ -10,4 +7,3 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;

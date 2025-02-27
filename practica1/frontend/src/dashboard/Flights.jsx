@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchFlights } from '../api/fetchFlights';
-import './Flight.css'; // Importa el archivo de estilos
 
-const FlightStatus = () => {
+export const Flights = () => {
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,20 +23,20 @@ const FlightStatus = () => {
   }, []);
 
   if (loading) {
-    return <div className="loading">Cargando vuelos...</div>;
+    return <div>Cargando vuelos...</div>;
   }
 
   if (error) {
-    return <div className="error">{error}</div>;
+    return <div>{error}</div>;
   }
 
   return (
-    <div className="flight-status">
+    <div>
       <h2>Estado de Vuelos</h2>
       {flights.length === 0 ? (
         <p>No hay vuelos disponibles.</p>
       ) : (
-        <table className="flight-table">
+        <table>
           <thead>
             <tr>
               <th>ID</th>
@@ -71,5 +70,3 @@ const FlightStatus = () => {
     </div>
   );
 };
-
-export default FlightStatus;

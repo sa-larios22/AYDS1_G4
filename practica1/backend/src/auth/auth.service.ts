@@ -81,7 +81,11 @@ export class AuthService extends PrismaClient implements OnModuleInit  {
       select: {
         id: true,
         email: true,
-        password: true
+        password: true,
+        name: true,
+        lastname: true,
+        username: true,
+        role: true,
       }
     });
 
@@ -92,6 +96,8 @@ export class AuthService extends PrismaClient implements OnModuleInit  {
     if ( !bcrypt.compareSync(password, user.password) ) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    delete user.password;
 
     return {
       ...user,
