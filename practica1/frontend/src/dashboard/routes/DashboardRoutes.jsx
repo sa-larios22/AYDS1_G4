@@ -3,6 +3,7 @@ import { Flights } from "../Flights"
 import { Home } from "../Home"
 import { AdminDashboard } from "../admin"
 import { GestionUsuarios } from "../admin/GestionUsuarios"
+import { HistorialPagos } from "../admin/HistorialPagos"
 import StaffDashboard from "../personal/StaffDashboard"
 import ClientDashboard from "../user/ClientDashboard"
 
@@ -13,6 +14,7 @@ export const DashboardRoutes = () => {
             <Route path="/dashboard" element={<Home />} />
             <Route path="/flights" element={<Flights />} />
             <Route path="/admin/users" element={<GestionUsuarios />} />
+            <Route path="/admin/payments" element={<HistorialPagos />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/client" element={<ClientDashboard />} />
             <Route path="/staff" element={<StaffDashboard />} />
