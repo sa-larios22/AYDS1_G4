@@ -1,5 +1,5 @@
 // src/components/Layout.jsx
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../hooks';
 
 export const HomeLayout = ({ children }) => {
