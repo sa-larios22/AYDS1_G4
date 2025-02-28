@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { fetchFlights } from "../api/fetchFlights";
 import {
   Table,
   TableBody,
@@ -30,68 +31,32 @@ const FlightStatus = () => {
   const menuRefs = useRef({});
 
   useEffect(() => {
-    const mockFlights = [
-      {
-        id: 1,
-        origin: "Ciudad de México (MEX)",
-        destination: "Nueva York (JFK)",
-        departure: "2025-02-25T08:30:00",
-        arrival: "2025-02-25T14:15:00",
-        status: "Programado",
-        gate: { name: "A1" },
-        seats: {
-          economy: { price: 350, sold: 100, capacity: 120 },
-          business: { price: 700, sold: 30, capacity: 40 },
-          firstClass: { price: 1200, sold: 5, capacity: 10 },
-        },
-      },
-      {
-        id: 2,
-        origin: "Londres (LHR)",
-        destination: "Madrid (MAD)",
-        departure: "2025-02-25T10:00:00",
-        arrival: "2025-02-25T12:30:00",
-        status: "En puerta",
-        gate: { name: "B3" },
-        seats: {
-          economy: { price: 200, sold: 80, capacity: 100 },
-          business: { price: 500, sold: 20, capacity: 30 },
-          firstClass: { price: 900, sold: 10, capacity: 15 },
-        },
-      },
-      {
-        id: 3,
-        origin: "Tokio (HND)",
-        destination: "Los Ángeles (LAX)",
-        departure: "2025-02-26T16:45:00",
-        arrival: "2025-02-26T08:20:00",
-        status: "Aterrizó",
-        gate: { name: "C5" },
-        seats: {
-          economy: { price: 400, sold: 150, capacity: 180 },
-          business: { price: 850, sold: 40, capacity: 50 },
-          firstClass: { price: 1300, sold: 8, capacity: 15 },
-        },
-      },
-    ];
+    // Llamada a la API para obtener los vuelos
+    const getFlights = async () => {
+      try {
+        const data = await fetchFlights();
+        setFlights(data);
+        setLoading(false);
 
-    setTimeout(() => {
-      setFlights(mockFlights);
-      setLoading(false);
-    }, 1000);
+        // Inicializar estado de selección por vuelo
+        setSelectedClasses(
+          data.reduce((acc, flight) => {
+            acc[flight.id] = 0; // Inicia con clase económica (índice 0)
+            return acc;
+          }, {})
+        );
 
-    // Inicializar estado de selección por vuelo
-    setSelectedClasses(
-      mockFlights.reduce((acc, flight) => {
-        acc[flight.id] = 0; // Inicia con clase económica (índice 0)
-        return acc;
-      }, {})
-    );
+        menuRefs.current = data.reduce((acc, flight) => {
+          acc[flight.id] = { anchorRef: null, open: false };
+          return acc;
+        }, {});
+      } catch (err) {
+        setError('Error al cargar los vuelos');
+        setLoading(false);
+      }
+    };
 
-    menuRefs.current = mockFlights.reduce((acc, flight) => {
-      acc[flight.id] = { anchorRef: null, open: false };
-      return acc;
-    }, {});
+    getFlights();
   }, []);
 
   const handleToggle = (flightId) => {
@@ -135,7 +100,7 @@ const FlightStatus = () => {
             {flights.map((flight) => {
               const classIndex = selectedClasses[flight.id];
               const classKey = ticketKeys[classIndex];
-              const seatInfo = flight.seats[classKey];
+              const seatInfo = flight.seats ? flight.seats[classKey] : {}; // Maneja el caso de vuelos sin información de asientos
 
               return (
                 <TableRow key={flight.id}>
