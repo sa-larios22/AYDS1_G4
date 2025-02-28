@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { useAuth } from "../hooks"
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { META_AUTH } from "../store";
 import { DashboardRoutes } from "../dashboard";
 import { AuthRoutes } from "../auth";
+import { useAuth } from "../hooks";
 
 export const AppRouter = () => {
 
@@ -17,10 +17,10 @@ export const AppRouter = () => {
         <Routes>
             {
                 ( status === META_AUTH.AUTHENTICATED)
-                ? <Route path="*" element={<DashboardRoutes />} />
+                ? <Route path="/*" element={<DashboardRoutes />} />
                 : <Route path="/auth/*" element={<AuthRoutes />} />
             }
-            <Route path="/" element={ <Navigate to='/auth/login' /> } />
+            <Route path="/*" element={ <Navigate to='/auth/login' /> } />
         </Routes>
     )
 

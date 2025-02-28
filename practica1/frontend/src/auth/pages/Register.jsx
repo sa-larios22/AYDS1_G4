@@ -5,8 +5,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useAuth } from '../context/AuthContext';
-import { AuthService } from '../service/authService';
+import { AuthService } from '../../service/authService';
 
 export function RegisterPage(){
   const [name, setName] = useState('');
@@ -19,7 +18,6 @@ export function RegisterPage(){
   const [error, setError] = useState('');
   const auth = AuthService();
   const navigate = useNavigate();
-  const { user, setUser } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -117,12 +115,6 @@ export function RegisterPage(){
                   onChange={(e) => setRole(e.target.value)}
                   label="Rol"
                 >
-                  {user && user.role === 'admin' &&(
-                    <div>
-                      <MenuItem value="admin">Administrador</MenuItem>
-                      <MenuItem value="staff">Personal del Aeropuerto</MenuItem>
-                    </div>
-                  )}
                   <MenuItem value="client">Pasajero</MenuItem>
                 </Select>
               </FormControl>

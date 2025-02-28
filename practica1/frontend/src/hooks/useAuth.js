@@ -1,32 +1,34 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { onChecking, onLogin, onLogout } from '../store'
 import { appApi } from '../api/appApi';
+import { useNavigate } from 'react-router-dom';
 
 export const useAuth = () => {
 
     const { status, user } = useSelector(state => state.auth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const startLogin = async({ email, password }) => {
         dispatch(onChecking());
 
         try {
             const { data } = await appApi.post('/auth/login', { email, password });
-
+            
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime());
 
-            const { user: userData } = data;
-
             dispatch( onLogin({
-                id: userData.id,
-                email: userData.email,
-                name: userData.name,
-                lastname: userData.lastname,
-                username: userData.username,
-                role: userData.role,
+                id: data.id,
+                email: data.email,
+                name: data.name,
+                lastname: data.lastname,
+                username: data.username,
+                role: data.role,
             }));
+
+            console.log(user)
 
         } catch (error) {
             console.log(error);
@@ -49,16 +51,16 @@ export const useAuth = () => {
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime());
 
-            const { user: userData } = data;
-
             dispatch( onLogin({
-                id: userData.id,
-                email: userData.email,
-                name: userData.name,
-                lastname: userData.lastname,
-                username: userData.username,
-                role: userData.role,
+                id: data.id,
+                email: data.email,
+                name: data.name,
+                lastname: data.lastname,
+                username: data.username,
+                role: data.role,
             }));
+
+            navigate('/dashboard');
 
         } catch (error) {
             console.log(error);

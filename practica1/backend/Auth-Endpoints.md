@@ -17,6 +17,29 @@ localhost:3000/api/auth/register
 }
 ```
 
+```json
+{
+    "name": "Rosemarie Wisozk",
+    "lastname": "Shanahan",
+    "username": "Lindgren6",
+    "email": "richmond32@hotmail.com",
+    "password": "4&D1_t3sT-P455w0rd",
+    "role": "USER"
+}
+```
+
+```json
+{
+    "name": "Rosemarie Wisozk",
+    "lastname": "Shanahan",
+    "username": "Keeley",
+    "email": "richmond33@hotmail.com",
+    "password": "4&D1_t3sT-P455w0rd",
+    "role": "PERSONAL"
+}
+```
+
+
 
 ## POST Login
 ```
