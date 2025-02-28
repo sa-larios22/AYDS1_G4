@@ -1,5 +1,5 @@
 // src/components/personal.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const Personal = () => {
   const [activeTab, setActiveTab] = useState('perfil');

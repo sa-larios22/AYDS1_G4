@@ -1,15 +1,10 @@
 // src/components/Layout.jsx
-import React from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { NavLink } from 'react-router-dom'
+import { useAuth } from '../hooks';
 
-const Layout = () => {
-  const { user, setUser } = useAuth();
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    setUser(null); // Elimina el usuario autenticado
-    navigate('/login'); // Redirige a la página de login
-  };
+export const HomeLayout = ({ children }) => {
+  
+  const { user } = useAuth();
 
   return (
     <div style={containerStyle}>
@@ -17,16 +12,7 @@ const Layout = () => {
       <header style={headerStyle}>
         <div style={{width: '100%', display: 'flex', justifyContent: 'space-between', padding: '0 24px'}}>
           <h1>Aeropuerto Quetzal</h1>
-          <div style={authStyle}>
-            {user ? (
-              <>
-                <span style={userNameStyle}>{user.name}</span>
-                <button style={logoutButtonStyle} onClick={handleLogout}>Cerrar Sesión</button>
-              </>
-            ) : (
-              <NavLink to="/login" style={loginButtonStyle}>Iniciar Sesión</NavLink>
-            )}
-          </div>
+
         </div>
       </header>
 
@@ -46,7 +32,7 @@ const Layout = () => {
             </li>
 
             {/* Opciones para Administrador */}
-            {user?.role === 'admin' && (
+            {user?.role === 'ADMIN' && (
               <>
                 <li style={menuItemStyle}>
                   <NavLink to="/admin" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
@@ -72,7 +58,7 @@ const Layout = () => {
             )}
 
             {/* Opciones para Cliente (Pasajero) */}
-            {user?.role === 'client' && (
+            {user?.role === 'USER' && (
               <>
                 <li style={menuItemStyle}>
                   <NavLink to="/client" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
@@ -93,7 +79,7 @@ const Layout = () => {
             )}
 
             {/* Opciones para Personal */}
-            {user?.role === 'staff' && (
+            {user?.role === 'PERSONAL' && (
               <>
                 <li style={menuItemStyle}>
                   <NavLink to="/staff" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}>
@@ -118,7 +104,8 @@ const Layout = () => {
 
       {/* Área principal */}
       <main style={mainStyle}>
-        <Outlet />
+
+        {children}
       </main>
 
       {/* Footer fijo */}
@@ -213,36 +200,3 @@ const footerStyle = {
   alignItems: 'center',
   justifyContent: 'center'
 };
-
-const authStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '10px'
-};
-
-const userNameStyle = {
-  color: '#ecf0f1',
-  fontSize: '16px'
-};
-
-const loginButtonStyle = {
-  textDecoration: 'none',
-  color: '#fff',
-  backgroundColor: '#3498db',
-  padding: '8px 12px',
-  borderRadius: '5px',
-  transition: 'background 0.3s',
-  cursor: 'pointer'
-};
-
-const logoutButtonStyle = {
-  backgroundColor: '#e74c3c',
-  color: '#fff',
-  border: 'none',
-  padding: '8px 12px',
-  borderRadius: '5px',
-  cursor: 'pointer',
-  transition: 'background 0.3s'
-};
-
-export default Layout;

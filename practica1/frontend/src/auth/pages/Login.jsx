@@ -5,16 +5,16 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useAuth } from '../context/AuthContext';
-import { AuthService } from '../service/authService';
+import { useAuth } from '../../hooks'
 
 export function LoginPage() {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const auth = AuthService();
-  const { user, setUser } = useAuth();
+  const { startLogin } = useAuth();
   const navigate = useNavigate();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,21 +23,11 @@ export function LoginPage() {
       return;
     }
     setError("");
-    const response = await auth.login(email, password);
-    if (response){
-      const userData = await auth.getUser(response.id, response.token);
-      setUser({
-        id: response.id,
-        name: userData.name,
-        role: userData.role.toLowerCase(),
-        token: response.token
-      });
-
+    if (error === '') {
+      await startLogin({ email, password });
       toast.success('Inicio de sesión exitoso');
-
-      navigate('/');
+      navigate('/dashboard');
     }else{
-      setUser(null);
       toast.error('Credenciales incorrectas');
     }
   };

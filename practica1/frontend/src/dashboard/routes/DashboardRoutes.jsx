@@ -1,15 +1,15 @@
 import { Route, Routes } from "react-router-dom"
-import Home from "../Home"
-import { AdminDashboard } from "../admin/AdminDashboard"
+import { Home } from "../Home"
+import { Flights } from "../Flights"
+import { AdminDashboard } from "../admin"
 import ClientDashboard from "../user/ClientDashboard"
 import StaffDashboard from "../personal/StaffDashboard"
-import { Flights } from "../Flights"
 
 export const DashboardRoutes = () => {
 
     return (
         <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/dashboard" element={<Home />} />
             <Route path="/flights" element={<Flights />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/client" element={<ClientDashboard />} />
