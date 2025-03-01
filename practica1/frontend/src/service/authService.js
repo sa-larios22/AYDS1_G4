@@ -45,13 +45,12 @@ export function AuthService(){
     }
   }
 
-  const getUser = async (id, token) => {
+  const getUser = async (id) => {
     try{
       const response = await fetch(`${API}/user/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         }
       })
       if (!response.ok){
@@ -84,5 +83,32 @@ export function AuthService(){
       console.error('ERROR: ', error)
     }
   }
-  return { login, register, getUser, checkStatus }
+
+  const updateUser = async (id, name, lastname, username, email, password) =>{
+    try{
+      const response = await fetch(`${API}/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "name": name,
+          "lastname": lastname,
+          "username": username,
+          "email": email,
+          "password": password
+        })
+      })
+      if (!response.ok){
+        throw new Error('Error al actualizar usuario')
+      }
+      const data = await response.json()
+      return data
+      
+
+    }catch(error){
+      console.error('ERROR: ', error)
+    }
+  }
+  return { login, register, getUser, checkStatus, updateUser }
 }

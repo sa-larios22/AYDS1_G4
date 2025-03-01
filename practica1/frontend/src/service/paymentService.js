@@ -5,9 +5,6 @@ export function PaymentService() {
   const getPayments = async () => {
     try {
       const response = await axios.get(`${API}`);
-      if (!response.ok){
-        throw new Error('Error al obtener pagos')
-      }
       return response.data;
     } catch (error) {
       console.error('ERROR: ', error);
@@ -17,9 +14,6 @@ export function PaymentService() {
   const deletePayment = async (id) => {
     try {
       const response = await axios.delete(`${API}/${id}`);
-      if (!response.ok){
-        throw new Error('Error al eliminar pago')
-      }
       return response.data; 
     } catch (error) {
       console.error('ERROR: ', error);

@@ -18,7 +18,6 @@ export function HistorialPagos(){
       if (!data) {
         return;
       }
-      console.log(data);
       setPayments(data);
     }
     getPayments();

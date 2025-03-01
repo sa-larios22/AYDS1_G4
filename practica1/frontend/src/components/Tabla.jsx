@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
+import { fetchFlights } from '../api/fetchFlights'; 
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -22,168 +23,264 @@ import Grow from "@mui/material/Grow";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
+import TextField from '@mui/material/TextField';
+import { Select, MenuItem as MuiMenuItem, FormControl, InputLabel } from '@mui/material';
 
 const ticketClasses = ["Económica", "Ejecutiva", "Primera Clase"];
+const paymentTypes = ["CASH", "CREDIT_CARD", "DEBIT_CARD"];
 
-function createData(name, boletosd) {
-  return {
-    name,
-    boletosd,
-    history: [
-      {
-        date: '2020-01-05',
-        time: '10:00 AM',
-        price: 240,
-      },
-    ],
-  };
-}
+function CollapsibleTable() {
+  const [tickets, setTickets] = useState([]);
+  const [filteredTickets, setFilteredTickets] = useState([]);
+  const [departureDate, setDepartureDate] = useState('');
+  const [departureHour, setDepartureHour] = useState('');
+  const [paymentType, setPaymentType] = useState('CREDIT_CARD'); 
 
-function Row(props) {
-  const { row } = props;
-  const [open, setOpen] = React.useState(false);
-  const [selectedClassIndex, setSelectedClassIndex] = React.useState(0);
-  const anchorRef = React.useRef(null);
-  const [menuOpen, setMenuOpen] = React.useState(false);
-
-  const handleToggle = () => {
-    setMenuOpen((prevOpen) => !prevOpen);
-  };
-
-  const handleMenuItemClick = (index) => {
-    setSelectedClassIndex(index);
-    setMenuOpen(false);
-  };
-
-  return (
-    <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-        <TableCell component="th" scope="row">
-          {row.name}
-        </TableCell>
-        <TableCell align="right">
-          <ButtonGroup variant="contained" ref={anchorRef}>
-            <Button>{ticketClasses[selectedClassIndex]}</Button>
-            <Button
-              size="small"
-              aria-haspopup="menu"
-              onClick={handleToggle}
-            >
-              <ArrowDropDownIcon />
-            </Button>
-          </ButtonGroup>
-          <Popper open={menuOpen} anchorEl={anchorRef.current} transition>
-            {({ TransitionProps }) => (
-              <Grow {...TransitionProps}>
-                <Paper>
-                  <ClickAwayListener onClickAway={() => setMenuOpen(false)}>
-                    <MenuList>
-                      {ticketClasses.map((option, index) => (
-                        <MenuItem
-                          key={option}
-                          selected={index === selectedClassIndex}
-                          onClick={() => handleMenuItemClick(index)}
-                        >
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper>
-        </TableCell>
-        <TableCell align="center">{row.boletosd[selectedClassIndex]}</TableCell>
-        <TableCell align="right">
-          <IconButton color="primary">
-            <AddShoppingCartIcon />
-            Comprar
-          </IconButton>
-        </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h7" gutterBottom component="div">
-                Detalles
-              </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Fecha de Salida</TableCell>
-                    <TableCell align="right">Hora</TableCell>
-                    <TableCell align="right">Precio ($)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell component="th" scope="row">
-                        {historyRow.date}
-                      </TableCell>
-                      <TableCell align="right">{historyRow.time}</TableCell>
-                      <TableCell align="right">{historyRow.price}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </React.Fragment>
-  );
-}
-
-Row.propTypes = {
-  row: PropTypes.shape({
-    boletosd: PropTypes.arrayOf(PropTypes.number).isRequired,
-    history: PropTypes.arrayOf(
-      PropTypes.shape({
-        time: PropTypes.string.isRequired,
-        date: PropTypes.string.isRequired,
-        price: PropTypes.number.isRequired,
+  useEffect(() => {
+    fetchFlights()
+      .then((data) => {
+        setTickets(data);
+        setFilteredTickets(data); 
       })
-    ).isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired,
-};
+      .catch((error) => console.error('Error al obtener los tickets:', error));
+  }, []);
 
-const rows = [
-  createData('Dubai', [6, 4, 2]),
-  createData('Francia', [16, 10, 5]),
-];
+  const handleFilter = () => {
+    const filtered = tickets.filter((ticket) => {
+      const flightDate = ticket.flight.departure.split('T')[0]; 
+      const flightHour = ticket.flight.departure.split('T')[1].split(':').slice(0, 2).join(':'); 
 
-export default function CollapsibleTable() {
+      const matchesDate = departureDate ? flightDate === departureDate : true;
+      const matchesHour = departureHour ? flightHour === departureHour : true;
+
+      return matchesDate && matchesHour;
+    });
+
+    setFilteredTickets(filtered);
+  };
+
+  const Row = (props) => {
+    const handleBuyTicket = async () => {
+      const uniqueOrderId = `${String(row.id)}-${Date.now()}`;
+      const userId = row.created_by; 
+  
+      const orderDetails = [
+        {
+          quantity: 2, 
+          price: row.price,
+          ticketId: row.id,
+        },
+        {
+          quantity: 1, 
+          price: row.price,
+          ticketId: row.id + 1, 
+        }
+      ];
+  
+      const postData = {
+        userId: userId, 
+        orderDetails: orderDetails,
+      };
+  
+      console.log("Datos enviados para la compra:", postData);
+  
+      try {
+        const response = await fetch("http://localhost:3000/api/ticket/shop", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Error en la compra: ${response.statusText}`);
+        }
+  
+        const data = await response.json();
+        alert("Compra exitosa. ID de orden: " + data.id);
+      } catch (error) {
+        console.error("Error al procesar la compra:", error);
+        alert("Error al realizar la compra");
+      }
+    };
+  
+    const { row } = props;
+    const [open, setOpen] = React.useState(false);
+    const [selectedClassIndex, setSelectedClassIndex] = React.useState(0);
+    const anchorRef = React.useRef(null);
+    const [menuOpen, setMenuOpen] = React.useState(false);
+  
+    const handleToggle = () => {
+      setMenuOpen((prevOpen) => !prevOpen);
+    };
+  
+    const handleMenuItemClick = (index) => {
+      setSelectedClassIndex(index);
+      setMenuOpen(false);
+    };
+  
+    const flightDate = row.flight.departure.split('T')[0]; 
+    const flightHour = row.flight.departure.split('T')[1].split(':').slice(0, 2).join(':'); 
+  
+    return (
+      <React.Fragment>
+        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+          <TableCell>
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          </TableCell>
+          <TableCell component="th" scope="row">
+            {row.flight.origin} - {row.flight.destination}
+          </TableCell>
+          <TableCell align="center">
+            <ButtonGroup variant="contained" ref={anchorRef}>
+              <Button>{ticketClasses[selectedClassIndex]}</Button>
+              <Button
+                size="small"
+                aria-haspopup="menu"
+                onClick={handleToggle}
+              >
+                <ArrowDropDownIcon />
+              </Button>
+            </ButtonGroup>
+            <Popper open={menuOpen} anchorEl={anchorRef.current} transition>
+              {({ TransitionProps }) => (
+                <Grow {...TransitionProps}>
+                  <Paper>
+                    <ClickAwayListener onClickAway={() => setMenuOpen(false)}>
+                      <MenuList>
+                        {ticketClasses.map((option, index) => (
+                          <MenuItem
+                            key={option}
+                            selected={index === selectedClassIndex}
+                            onClick={() => handleMenuItemClick(index)}
+                          >
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper>
+          </TableCell>
+          <TableCell align="center">{row.availableSeats}</TableCell>
+          <TableCell align="right">
+            <FormControl fullWidth>
+              <InputLabel>Tipo de Pago</InputLabel>
+              <Select
+                value={paymentType}
+                onChange={(e) => setPaymentType(e.target.value)}
+                label="Tipo de Pago"
+              >
+                {paymentTypes.map((type) => (
+                  <MuiMenuItem key={type} value={type}>
+                    {type}
+                  </MuiMenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <IconButton color="primary" onClick={handleBuyTicket}>
+              <AddShoppingCartIcon />
+              Comprar
+            </IconButton>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Typography variant="h7" gutterBottom component="div">
+                  Detalles
+                </Typography>
+                <Table size="small" aria-label="purchases">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Fecha de Salida</TableCell>
+                      <TableCell align="right">Hora</TableCell>
+                      <TableCell align="right">Precio ($)</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        {flightDate}
+                      </TableCell>
+                      <TableCell align="right">{flightHour}:00</TableCell>
+                      <TableCell align="right">{row.price}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </React.Fragment>
+    );
+  };
+  
+
+  Row.propTypes = {
+    row: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      price: PropTypes.number.isRequired,
+      availableSeats: PropTypes.number.isRequired,
+      flight: PropTypes.shape({
+        origin: PropTypes.string.isRequired,
+        destination: PropTypes.string.isRequired,
+        departure: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
+  };
+
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-      <TableHead>
-          <TableRow sx={{ backgroundColor: '#1976d2' }}>
-            <TableCell />
-            <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Destino</TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Tipo</TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Boletos Disponibles</TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Boleto</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <Box sx={{ padding: 2 }}>
+        <TextField
+          label="Filtrar por Fecha"
+          type="date"
+          value={departureDate}
+          onChange={(e) => setDepartureDate(e.target.value)}
+          sx={{ marginRight: 2 }}
+        />
+        <TextField
+          label="Filtrar por Hora"
+          type="time"
+          value={departureHour}
+          onChange={(e) => setDepartureHour(e.target.value)}
+        />
+        <Button onClick={handleFilter} variant="contained" sx={{ marginLeft: 2 }}>
+          Filtrar
+        </Button>
+      </Box>
+
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#1976d2' }}>
+              <TableCell />
+              <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Destino</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Tipo</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Boletos Disponibles</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Boleto</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredTickets.map((ticket) => (
+              <Row key={ticket.id} row={ticket} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }
+
+export default CollapsibleTable;

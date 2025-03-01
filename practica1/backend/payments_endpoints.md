@@ -19,7 +19,7 @@ localhost:3000/api/payments
 
 ### POST: Create a Payment
 ```sh
-curl -X POST http://localhost:3000/payments \
+curl -X POST http://localhost:3000/api/payments \
      -H "Content-Type: application/json" \
      -d '{ 
            "amount": 100.0, 
