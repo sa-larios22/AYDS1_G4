@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import { PrismaClient, User } from '@prisma/client';
 
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { CreateAuthDto, LoginAuthDto, UpadtePasswordDto, UpdateAuthDto } from './dto';
 import { JwtPayload } from './interfaces';
-import { JwtService } from '@nestjs/jwt';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class AuthService extends PrismaClient implements OnModuleInit  {
@@ -109,6 +109,9 @@ export class AuthService extends PrismaClient implements OnModuleInit  {
     const { limit = 10, offset = 0 } = paginationDto;
 
     const users = await this.user.findMany({
+      where: {
+        active: true,
+      },
       take: limit,
       skip: offset,
       select: {
