@@ -3,7 +3,7 @@
 ## POST Create Ticker from Personal
 
 ```bash
-localhost:3000/api/ticker/create
+localhost:3000/api/ticket/create
 ```
 
 ### Body
@@ -21,7 +21,7 @@ localhost:3000/api/ticker/create
 ## POST shop from User
 
 ```bash
-localhost:3000/api/auth/login
+    localhost:3000/api/ticket/shop
 ```
 
 ### Body

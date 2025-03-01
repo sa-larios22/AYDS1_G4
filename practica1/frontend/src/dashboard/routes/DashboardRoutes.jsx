@@ -9,6 +9,7 @@ import StaffDashboard from "../personal/StaffDashboard";
 import StaffFlights from "../personal/StaffFlights";
 import StaffPayments from "../personal/StaffPayments";
 import ClientDashboard from "../user/ClientDashboard";
+import Tickets from "../user/Tickets.jsx";
 
 export const DashboardRoutes = () => {
   return (
@@ -25,6 +26,7 @@ export const DashboardRoutes = () => {
         
         {/* Rutas de cliente */}
         <Route path="/client" element={<ClientDashboard />} />
+        <Route path="/client/tickets" element={<Tickets />} />
         
         {/* Rutas de personal */}
         <Route path="/staff" element={<StaffDashboard />} />
