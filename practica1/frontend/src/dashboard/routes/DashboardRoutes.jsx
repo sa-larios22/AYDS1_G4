@@ -6,7 +6,6 @@ import { GestionUsuarios } from "../admin/GestionUsuarios"
 import { HistorialPagos } from "../admin/HistorialPagos"
 import StaffDashboard from "../personal/StaffDashboard"
 import ClientDashboard from "../user/ClientDashboard"
-
 export const DashboardRoutes = () => {
 
     return (

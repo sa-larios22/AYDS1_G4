@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
+import { HomeLayout } from "../../components";
 
 export const AdminDashboard = () => {
   const [transactions, setTransactions] = useState([
@@ -22,18 +23,25 @@ export const AdminDashboard = () => {
   ];
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 800, p: 2 }}>
-      <Typography variant="h5" gutterBottom>
-        📊 Informe de Ingresos Detallados
-      </Typography>
-      <Box sx={{ height: 400 }}>
-        <DataGrid
-          rows={transactions}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-        />
+    <HomeLayout>
+      <Box sx={{ width: "100", maxWidth: 800 }}>
+        <Typography variant="h5" gutterBottom>
+          Panel de Administración
+        </Typography>
       </Box>
-    </Box>
+      <Box sx={{ width: "100", maxWidth: 800, marginY: "50px", marginX: "auto" }}>
+        <Typography variant="h5" gutterBottom>
+          📊 Informe de Ingresos Detallados
+        </Typography>
+        <Box sx={{ height: 400 }}>
+          <DataGrid
+            rows={transactions}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+          />
+        </Box>
+      </Box>
+    </HomeLayout>
   );
 };

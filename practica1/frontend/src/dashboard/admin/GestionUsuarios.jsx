@@ -3,6 +3,7 @@ import { Box, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { UserService } from "../../service/userService";
+import { HomeLayout } from "../../components";
 
 export const GestionUsuarios = () => {
   const [users, setUsers] = useState([
@@ -31,7 +32,6 @@ export const GestionUsuarios = () => {
     if (!response) {
       return;
     }
-    console.log(response);
     setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
   };
 
@@ -55,16 +55,18 @@ export const GestionUsuarios = () => {
   ];
 
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
-      <h2>Gestión de usuarios</h2>
-      <DataGrid sx={{width: '100%', maxWidth: '802px'}}
-        rows={users}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        disableSelectionOnClick
-      />
-    </Box>
+    <HomeLayout>
+      <Box sx={{ height: 400, width: 900, marginX: "auto", mt: 10 }}>
+        <h2>Gestión de usuarios</h2>
+        <DataGrid sx={{width: '100%', maxWidth: '802px'}}
+          rows={users}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+        />
+      </Box>
+    </HomeLayout>
   );
 };
 

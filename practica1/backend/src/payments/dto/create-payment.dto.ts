@@ -15,6 +15,6 @@ export class CreatePaymentDto {
   type: PaymentType;
 
   @IsNumber()
-  @Type(() => Number)
+  @Type(() => Number) 
   orderId: number;
 }

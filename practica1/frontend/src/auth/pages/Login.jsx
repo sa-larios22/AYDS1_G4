@@ -71,7 +71,7 @@ export function LoginPage() {
                 ¿No tienes cuenta? 
                 <span 
                 style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}}
-                onClick={() => navigate('/register')}
+                onClick={() => navigate('/auth/register')}
                 >Regístrate</span>
               </Typography>
             </div>

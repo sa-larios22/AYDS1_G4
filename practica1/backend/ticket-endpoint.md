@@ -14,14 +14,14 @@ localhost:3000/api/ticker/create
     "price": 50.00,
     "totalSeats": 100,
     "flightId": 1,
-    "userId": 2,
+    "userId": 2
 }
 ```
 
 ## POST shop from User
 
 ```bash
-localhost:3000/api/auth/login
+localhost:3000/api/ticker/shop
 ```
 
 ### Body

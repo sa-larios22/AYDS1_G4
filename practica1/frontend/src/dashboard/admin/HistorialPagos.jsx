@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { PaymentService } from "../../service/paymentService";
+import { HomeLayout } from "../../components";
 
 export function HistorialPagos(){
   const [payments, setPayments] = useState([
@@ -31,14 +32,16 @@ export function HistorialPagos(){
   ];
 
   return (
-    <Box sx={{ width: "100%", maxWidth: '800px' }}>
-      <h2>Historial de pagos</h2>
-      <DataGrid
-        rows={payments}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-      />
-    </Box>
+    <HomeLayout>
+      <Box sx={{ width: "100%", maxWidth: '800px', marginX: "auto", mt: 10 }}>
+        <h2>Historial de pagos</h2>
+        <DataGrid
+          rows={payments}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+        />
+      </Box>
+    </HomeLayout>
   );
 }

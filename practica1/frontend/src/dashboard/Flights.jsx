@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchFlights } from '../api/fetchFlights';
 import { CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { HomeLayout } from '../components';
 
 export const Flights = () => {
   const [flights, setFlights] = useState([]);
@@ -32,56 +33,57 @@ export const Flights = () => {
   }
 
   return (
-
-    <TableContainer  component={Paper} sx={{ mt: 3, p: 2 }}>
-      <Typography variant="h5" gutterBottom>
-        Estado de Vuelos
-      </Typography>
-      {
-        loading ? (
-          <CircularProgress />
-        ) : error ? (
-          <Typography color="error">{error}</Typography>
-        ) : (
-          flights.length === 0 ? (
-            <Typography variant='h6'>No hay vuelos disponibles.</Typography>
+    <HomeLayout>
+      <TableContainer  component={Paper} sx={{ mt: 10, p: 2, marginX: 'auto', maxWidth: 1000 }}>
+        <Typography variant="h5" gutterBottom>
+          Estado de Vuelos
+        </Typography>
+        {
+          loading ? (
+            <CircularProgress />
+          ) : error ? (
+            <Typography color="error">{error}</Typography>
           ) : (
-            <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: '#1976d2' }}>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>ID</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Origen</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Destino</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Salida</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Llegada</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Precio</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Estado</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Puerta</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Boletos Vendidos</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
-                flights.map((flight) => (
-                  <TableRow key={flight.id}>
-                    <TableCell>{flight.id}</TableCell>
-                    <TableCell>{flight.origin}</TableCell>
-                    <TableCell>{flight.destination}</TableCell>
-                    <TableCell>{new Date(flight.departure).toLocaleString()}</TableCell>
-                    <TableCell>{new Date(flight.arrival).toLocaleString()}</TableCell>
-                    <TableCell>${flight.price}</TableCell>
-                    <TableCell>{flight.status}</TableCell>
-                    <TableCell>{flight.gate?.name || "No asignada"}</TableCell>
-                    <TableCell>{flight.soldTickets}/{flight.maxPassengers}</TableCell>
-                  </TableRow>
-                ))
-              }
-            </TableBody>
-          </Table>
+            flights.length === 0 ? (
+              <Typography variant='h6'>No hay vuelos disponibles.</Typography>
+            ) : (
+              <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: '#1976d2' }}>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>ID</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Origen</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Destino</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Salida</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Llegada</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Precio</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Estado</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Puerta</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Boletos Vendidos</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  flights.map((flight) => (
+                    <TableRow key={flight.id}>
+                      <TableCell>{flight.id}</TableCell>
+                      <TableCell>{flight.origin}</TableCell>
+                      <TableCell>{flight.destination}</TableCell>
+                      <TableCell>{new Date(flight.departure).toLocaleString()}</TableCell>
+                      <TableCell>{new Date(flight.arrival).toLocaleString()}</TableCell>
+                      <TableCell>${flight.price}</TableCell>
+                      <TableCell>{flight.status}</TableCell>
+                      <TableCell>{flight.gate?.name || "No asignada"}</TableCell>
+                      <TableCell>{flight.soldTickets}/{flight.maxPassengers}</TableCell>
+                    </TableRow>
+                  ))
+                }
+              </TableBody>
+            </Table>
+            )
           )
-        )
-      }
-    </TableContainer>
+        }
+      </TableContainer>
+    </HomeLayout>
 
     // <div>
     //   <h2>Estado de Vuelos</h2>
