@@ -1,0 +1,146 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  PERSONAL
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  name     String
+  lastname String
+
+  username String @unique
+  email    String @unique
+  password String
+
+  active Boolean @default(true)
+
+  role Role @default(USER)
+
+  orders Order[]
+  Ticket Ticket[]
+}
+
+model Gate {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  flights Flight[]
+}
+
+enum Status {
+  SCHEDULED
+  AT_GATE
+  LANDED
+}
+
+model Flight {
+  id Int @id @default(autoincrement())
+
+  origin      String
+  destination String
+
+  departure     DateTime
+  arrival       DateTime
+  price         Float
+  status        Status   @default(SCHEDULED)
+  maxPassengers Int
+  soldTickets   Int
+
+  GateId Int?
+  gate   Gate? @relation(fields: [GateId], references: [id])
+
+  tickets Ticket[]
+}
+
+enum TicketStatus {
+  SOLD
+  AVAILABLE
+}
+
+enum TicketType {
+  ECONOMY
+  BUSINESS
+  FIRST_CLASS
+}
+
+model Ticket {
+  id Int @id @default(autoincrement())
+
+  type  TicketType @default(ECONOMY)
+  price Float
+
+  availableSeats Int
+  soldSeats      Int
+  totalSeats     Int
+
+  active Boolean @default(true)
+
+  created_by Int
+  User       User @relation(fields: [created_by], references: [id])
+
+  flightId Int
+  flight   Flight @relation(fields: [flightId], references: [id])
+
+  details OrderDetail[]
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  amount Int   @default(0)
+  total  Float @default(0)
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  details OrderDetail[]
+  payment Payment?
+}
+
+model OrderDetail {
+  id Int @id @default(autoincrement())
+
+  quantity Int
+  price    Float
+
+  status TicketStatus @default(AVAILABLE)
+
+  orderId Int
+  order   Order @relation(fields: [orderId], references: [id])
+
+  ticketId Int
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
+}
+
+enum PaymentType {
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+}
+
+model Payment {
+  id     Int         @id @default(autoincrement())
+  amount Float
+  date   DateTime
+  type   PaymentType @default(CASH)
+
+  orderId Int   @unique
+  order   Order @relation(fields: [orderId], references: [id])
+}

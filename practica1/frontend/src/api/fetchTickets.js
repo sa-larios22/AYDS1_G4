@@ -1,0 +1,4 @@
+export const fetchTickets = async () => {
+    const response = await fetch(`http://localhost:3000/api/ticket`);
+    return response.json();
+};

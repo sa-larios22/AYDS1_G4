@@ -1,0 +1,47 @@
+services:
+  db:
+    container_name: db-container
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - ./backend/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-container
+    restart: always
+    volumes:
+      - ./backend/src:/app/src
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - PORT=3000
+      - JWT_SECRET=4YD11S2CR3T
+    command: npm run start:dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-container
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - PORT=5173
+    command: npm run dev
