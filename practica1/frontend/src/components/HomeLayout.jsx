@@ -12,20 +12,49 @@ export const HomeLayout = ({ children }) => {
   return (
     <div style={styles.container}>
       {/* Encabezado fijo */}
+<<<<<<< Updated upstream
+      <header style={styles.header}>
+        <div style={styles.headerContent}>
+          <h1 style={styles.title}>Aeropuerto Quetzal</h1>
+          {user && (
+            <div style={styles.userSection}>
+              <span style={styles.userName}>{user.name || 'Usuario'}</span>
+              <button onClick={startLogOut} style={styles.logoutButton}>
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+=======
       <header style={headerStyle}>
         <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
           <h1>Aeropuerto Quetzal</h1>
 
+>>>>>>> Stashed changes
         </div>
       </header>
 
       {/* Menú lateral fijo */}
+<<<<<<< Updated upstream
+      <aside style={styles.sidebar}>
+        <nav style={styles.nav}>
+          <ul style={styles.menuList}>
+            <li style={styles.menuItem}>
+              <NavLink
+                to="/"
+                style={({ isActive }) =>
+                  isActive ? { ...styles.link, ...styles.activeLink } : styles.link
+                }
+                end
+              >
+                <span style={styles.icon}>🏠</span>Inicio
+=======
       <aside style={sidebarStyle}>
         <nav style={navStyle}>
           <ul style={menuListStyle}>
             <li style={menuItemStyle}>
               <NavLink to="/dashboard" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle} end>
                 <span style={iconStyle}>🏠</span>Inicio
+>>>>>>> Stashed changes
               </NavLink>
             </li>
             <li style={styles.menuItem}>
@@ -151,7 +180,13 @@ export const HomeLayout = ({ children }) => {
       </aside>
 
       {/* Área principal */}
+<<<<<<< Updated upstream
       <main style={styles.main}>{children}</main>
+=======
+      <main>
+        {children}
+      </main>
+>>>>>>> Stashed changes
 
       {/* Footer fijo */}
       <footer style={styles.footer}>
@@ -260,6 +295,9 @@ const styles = {
   }
 };
 
+<<<<<<< Updated upstream
+export default HomeLayout;
+=======
 const headerStyle = {
   position: 'fixed',
   top: 0,
@@ -331,3 +369,4 @@ const footerStyle = {
   alignItems: 'center',
   justifyContent: 'center'
 };
+>>>>>>> Stashed changes

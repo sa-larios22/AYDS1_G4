@@ -14,6 +14,7 @@ export const DashboardRoutes = () => {
             <Route path="/flights" element={<Flights />} />
             <Route path="/admin/users" element={<GestionUsuarios />} />
             <Route path="/admin/payments" element={<HistorialPagos />} />
+            <Route path="/admin/register" element={<HistorialPagos />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/client" element={<ClientDashboard />} />
             <Route path="/staff" element={<StaffDashboard />} />
