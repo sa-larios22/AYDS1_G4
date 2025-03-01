@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchFlights } from '../api/fetchFlights';
+import { fetchFlights } from '../api/fetchFlights'; 
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -24,29 +24,31 @@ import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import TextField from '@mui/material/TextField';
+import { Select, MenuItem as MuiMenuItem, FormControl, InputLabel } from '@mui/material';
 
 const ticketClasses = ["Económica", "Ejecutiva", "Primera Clase"];
+const paymentTypes = ["CASH", "CREDIT_CARD", "DEBIT_CARD"];
 
 function CollapsibleTable() {
-  const [flights, setFlights] = useState([]);
-  const [filteredFlights, setFilteredFlights] = useState([]);
+  const [tickets, setTickets] = useState([]);
+  const [filteredTickets, setFilteredTickets] = useState([]);
   const [departureDate, setDepartureDate] = useState('');
   const [departureHour, setDepartureHour] = useState('');
+  const [paymentType, setPaymentType] = useState('CREDIT_CARD'); 
 
   useEffect(() => {
     fetchFlights()
       .then((data) => {
-        setFlights(data);
-        setFilteredFlights(data); // Inicializa los vuelos filtrados
+        setTickets(data);
+        setFilteredTickets(data); 
       })
-      .catch((error) => console.error('Error al obtener los vuelos:', error));
+      .catch((error) => console.error('Error al obtener los tickets:', error));
   }, []);
 
-  // Función para filtrar los vuelos según la fecha y hora de salida
   const handleFilter = () => {
-    const filtered = flights.filter((flight) => {
-      const flightDate = flight.departure.split('T')[0]; // Obtener solo la fecha
-      const flightHour = flight.departure.split('T')[1].split(':').slice(0, 2).join(':'); // Obtener solo la hora en HH:mm
+    const filtered = tickets.filter((ticket) => {
+      const flightDate = ticket.flight.departure.split('T')[0]; 
+      const flightHour = ticket.flight.departure.split('T')[1].split(':').slice(0, 2).join(':'); 
 
       const matchesDate = departureDate ? flightDate === departureDate : true;
       const matchesHour = departureHour ? flightHour === departureHour : true;
@@ -54,28 +56,73 @@ function CollapsibleTable() {
       return matchesDate && matchesHour;
     });
 
-    setFilteredFlights(filtered);
+    setFilteredTickets(filtered);
   };
 
   const Row = (props) => {
+    const handleBuyTicket = async () => {
+      const uniqueOrderId = `${String(row.id)}-${Date.now()}`;
+      const userId = row.created_by; 
+  
+      const orderDetails = [
+        {
+          quantity: 2, 
+          price: row.price,
+          ticketId: row.id,
+        },
+        {
+          quantity: 1, 
+          price: row.price,
+          ticketId: row.id + 1, 
+        }
+      ];
+  
+      const postData = {
+        userId: userId, 
+        orderDetails: orderDetails,
+      };
+  
+      console.log("Datos enviados para la compra:", postData);
+  
+      try {
+        const response = await fetch("http://localhost:3000/api/ticket/shop", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Error en la compra: ${response.statusText}`);
+        }
+  
+        const data = await response.json();
+        alert("Compra exitosa. ID de orden: " + data.id);
+      } catch (error) {
+        console.error("Error al procesar la compra:", error);
+        alert("Error al realizar la compra");
+      }
+    };
+  
     const { row } = props;
     const [open, setOpen] = React.useState(false);
     const [selectedClassIndex, setSelectedClassIndex] = React.useState(0);
     const anchorRef = React.useRef(null);
     const [menuOpen, setMenuOpen] = React.useState(false);
-
+  
     const handleToggle = () => {
       setMenuOpen((prevOpen) => !prevOpen);
     };
-
+  
     const handleMenuItemClick = (index) => {
       setSelectedClassIndex(index);
       setMenuOpen(false);
     };
-
-    const flightDate = row.departure.split('T')[0]; // Desglosar fecha
-    const flightHour = row.departure.split('T')[1].split(':').slice(0, 2).join(':'); // Desglosar hora en HH:mm
-
+  
+    const flightDate = row.flight.departure.split('T')[0]; 
+    const flightHour = row.flight.departure.split('T')[1].split(':').slice(0, 2).join(':'); 
+  
     return (
       <React.Fragment>
         <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -89,7 +136,7 @@ function CollapsibleTable() {
             </IconButton>
           </TableCell>
           <TableCell component="th" scope="row">
-            {row.origin} - {row.destination}
+            {row.flight.origin} - {row.flight.destination}
           </TableCell>
           <TableCell align="center">
             <ButtonGroup variant="contained" ref={anchorRef}>
@@ -124,9 +171,23 @@ function CollapsibleTable() {
               )}
             </Popper>
           </TableCell>
-          <TableCell align="center">{row.maxPassengers - row.soldTickets}</TableCell>
+          <TableCell align="center">{row.availableSeats}</TableCell>
           <TableCell align="right">
-            <IconButton color="primary">
+            <FormControl fullWidth>
+              <InputLabel>Tipo de Pago</InputLabel>
+              <Select
+                value={paymentType}
+                onChange={(e) => setPaymentType(e.target.value)}
+                label="Tipo de Pago"
+              >
+                {paymentTypes.map((type) => (
+                  <MuiMenuItem key={type} value={type}>
+                    {type}
+                  </MuiMenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <IconButton color="primary" onClick={handleBuyTicket}>
               <AddShoppingCartIcon />
               Comprar
             </IconButton>
@@ -164,18 +225,18 @@ function CollapsibleTable() {
       </React.Fragment>
     );
   };
+  
 
   Row.propTypes = {
     row: PropTypes.shape({
-      boletosd: PropTypes.arrayOf(PropTypes.number).isRequired,
-      history: PropTypes.arrayOf(
-        PropTypes.shape({
-          time: PropTypes.string.isRequired,
-          date: PropTypes.string.isRequired,
-          price: PropTypes.number.isRequired,
-        })
-      ).isRequired,
-      name: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+      price: PropTypes.number.isRequired,
+      availableSeats: PropTypes.number.isRequired,
+      flight: PropTypes.shape({
+        origin: PropTypes.string.isRequired,
+        destination: PropTypes.string.isRequired,
+        departure: PropTypes.string.isRequired,
+      }).isRequired,
     }).isRequired,
   };
 
@@ -212,8 +273,8 @@ function CollapsibleTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredFlights.map((flight) => (
-              <Row key={flight.id} row={flight} />
+            {filteredTickets.map((ticket) => (
+              <Row key={ticket.id} row={ticket} />
             ))}
           </TableBody>
         </Table>

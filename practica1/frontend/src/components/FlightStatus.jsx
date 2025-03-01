@@ -31,22 +31,37 @@ const FlightStatus = () => {
   const menuRefs = useRef({});
 
   useEffect(() => {
-    // Llamada a la API para obtener los vuelos
     const getFlights = async () => {
       try {
-        const data = await fetchFlights();
-        setFlights(data);
+
+        const flightData = await fetchFlights();
+        const flightDetails = await fetch("http://localhost:3000/api/flights").then(res => res.json());
+
+
+        const combinedFlights = flightData.map(flight => {
+          const flightDetail = flightDetails.find(detail => detail.id === flight.flightId);
+
+          if (flightDetail) {
+            flight.gateName = flightDetail.gate?.name || "No asignada";
+            flight.flightPrice = flightDetail.price;
+            flight.soldTickets = flightDetail.soldTickets;
+            flight.totalSeats = flightDetail.maxPassengers;
+          }
+          return flight;
+        });
+
+        setFlights(combinedFlights);
         setLoading(false);
 
-        // Inicializar estado de selección por vuelo
         setSelectedClasses(
-          data.reduce((acc, flight) => {
-            acc[flight.id] = 0; // Inicia con clase económica (índice 0)
+          combinedFlights.reduce((acc, flight) => {
+            acc[flight.id] = 0;
             return acc;
           }, {})
         );
 
-        menuRefs.current = data.reduce((acc, flight) => {
+
+        menuRefs.current = combinedFlights.reduce((acc, flight) => {
           acc[flight.id] = { anchorRef: null, open: false };
           return acc;
         }, {});
@@ -100,17 +115,17 @@ const FlightStatus = () => {
             {flights.map((flight) => {
               const classIndex = selectedClasses[flight.id];
               const classKey = ticketKeys[classIndex];
-              const seatInfo = flight.seats ? flight.seats[classKey] : {}; // Maneja el caso de vuelos sin información de asientos
+              const seatInfo = flight.seats ? flight.seats[classKey] : {}; 
 
               return (
                 <TableRow key={flight.id}>
                   <TableCell>{flight.id}</TableCell>
-                  <TableCell>{flight.origin}</TableCell>
-                  <TableCell>{flight.destination}</TableCell>
-                  <TableCell>{new Date(flight.departure).toLocaleString()}</TableCell>
-                  <TableCell>{new Date(flight.arrival).toLocaleString()}</TableCell>
-                  <TableCell>{flight.status}</TableCell>
-                  <TableCell>{flight.gate?.name || "No asignada"}</TableCell>
+                  <TableCell>{flight.flight.origin}</TableCell>
+                  <TableCell>{flight.flight.destination}</TableCell>
+                  <TableCell>{new Date(flight.flight.departure).toLocaleString()}</TableCell>
+                  <TableCell>{new Date(flight.flight.arrival).toLocaleString()}</TableCell>
+                  <TableCell>{flight.flight.status}</TableCell>
+                  <TableCell>{flight.gateName || "No asignada"}</TableCell> {}
                   <TableCell>
                     <ButtonGroup variant="contained" ref={(el) => (menuRefs.current[flight.id].anchorRef = el)}>
                       <Button>{ticketClasses[classIndex]}</Button>
@@ -158,9 +173,9 @@ const FlightStatus = () => {
                       )}
                     </Popper>
                   </TableCell>
-                  <TableCell>${seatInfo.price}</TableCell>
+                  <TableCell>${seatInfo?.price || flight.flightPrice || "N/A"}</TableCell> {}
                   <TableCell>
-                    {seatInfo.sold}/{seatInfo.capacity}
+                    {seatInfo.sold}/{seatInfo.capacity || flight.totalSeats}
                   </TableCell>
                 </TableRow>
               );

@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 
 export class CreatePaymentDto {
   @IsNumber()
+  @Type(() => Number)
   amount: number;
 
   @IsDate()
@@ -14,5 +15,6 @@ export class CreatePaymentDto {
   type: PaymentType;
 
   @IsNumber()
+  @Type(() => Number)
   orderId: number;
 }
