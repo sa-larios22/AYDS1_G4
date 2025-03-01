@@ -12,7 +12,6 @@ export const HomeLayout = ({ children }) => {
   return (
     <div style={styles.container}>
       {/* Encabezado fijo */}
-<<<<<<< Updated upstream
       <header style={styles.header}>
         <div style={styles.headerContent}>
           <h1 style={styles.title}>Aeropuerto Quetzal</h1>
@@ -24,17 +23,10 @@ export const HomeLayout = ({ children }) => {
               </button>
             </div>
           )}
-=======
-      <header style={headerStyle}>
-        <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
-          <h1>Aeropuerto Quetzal</h1>
-
->>>>>>> Stashed changes
         </div>
       </header>
 
       {/* Menú lateral fijo */}
-<<<<<<< Updated upstream
       <aside style={styles.sidebar}>
         <nav style={styles.nav}>
           <ul style={styles.menuList}>
@@ -47,14 +39,6 @@ export const HomeLayout = ({ children }) => {
                 end
               >
                 <span style={styles.icon}>🏠</span>Inicio
-=======
-      <aside style={sidebarStyle}>
-        <nav style={navStyle}>
-          <ul style={menuListStyle}>
-            <li style={menuItemStyle}>
-              <NavLink to="/dashboard" style={({ isActive }) => isActive ? activeLinkStyle : linkStyle} end>
-                <span style={iconStyle}>🏠</span>Inicio
->>>>>>> Stashed changes
               </NavLink>
             </li>
             <li style={styles.menuItem}>
@@ -180,13 +164,9 @@ export const HomeLayout = ({ children }) => {
       </aside>
 
       {/* Área principal */}
-<<<<<<< Updated upstream
-      <main style={styles.main}>{children}</main>
-=======
       <main>
         {children}
       </main>
->>>>>>> Stashed changes
 
       {/* Footer fijo */}
       <footer style={styles.footer}>
@@ -294,79 +274,3 @@ const styles = {
     justifyContent: 'center'
   }
 };
-
-<<<<<<< Updated upstream
-export default HomeLayout;
-=======
-const headerStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  height: '60px',
-  backgroundColor: '#2c3e50',
-  color: '#fff',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  zIndex: 1000
-};
-
-const sidebarStyle = {
-  position: 'fixed',
-  top: '60px',
-  left: 0,
-  width: '220px',
-  height: 'calc(100vh - 60px)',
-  backgroundColor: '#34495e',
-  padding: '20px',
-  boxSizing: 'border-box'
-};
-
-const navStyle = {
-  width: '100%'
-};
-
-const menuListStyle = {
-  listStyleType: 'none',
-  padding: 0,
-  margin: 0
-};
-
-const menuItemStyle = {
-  marginBottom: '15px'
-};
-
-const linkStyle = {
-  textDecoration: 'none',
-  color: '#bdc3c7',
-  display: 'flex',
-  alignItems: 'center',
-  fontSize: '16px',
-  transition: 'color 0.3s'
-};
-
-const activeLinkStyle = {
-  ...linkStyle,
-  color: '#ecf0f1',
-  fontWeight: 'bold'
-};
-
-const iconStyle = {
-  marginRight: '10px'
-};
-
-
-const footerStyle = {
-  position: 'fixed',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  height: '40px',
-  backgroundColor: '#2c3e50',
-  color: '#fff',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center'
-};
->>>>>>> Stashed changes
