@@ -58,6 +58,7 @@ export const Flights = () => {
                 <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Estado</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Puerta</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Boletos Vendidos</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: 'white' }}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
