@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 
-export const AdminDashboard = () => {
+export function InformeIngresos() {
   const [transactions, setTransactions] = useState([
     { id: 1, date: "2024-02-28", client: "Juan Pérez", amount: 150.0, method: "Tarjeta" },
     { id: 2, date: "2024-02-27", client: "Ana Gómez", amount: 200.5, method: "Efectivo" },
@@ -14,15 +14,17 @@ export const AdminDashboard = () => {
     {
       field: "date",
       headerName: "Fecha",
-      width: 150
+      width: 150,
+      type: "date",
+      valueGetter: (params) => new Date(params.row.date), // Convierte la fecha a un objeto Date
     },
-    { field: "client", headerName: "Cliente", width: 220 },
+    { field: "client", headerName: "Cliente", width: 200 },
     { field: "amount", headerName: "Monto ($)", width: 150, type: "number" },
-    { field: "method", headerName: "Método de Pago", width: 200 },
+    { field: "method", headerName: "Método de Pago", width: 180 },
   ];
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 800, p: 2 }}>
+    <Box sx={{ width: "100%", p: 2 }}>
       <Typography variant="h5" gutterBottom>
         📊 Informe de Ingresos Detallados
       </Typography>
@@ -36,4 +38,4 @@ export const AdminDashboard = () => {
       </Box>
     </Box>
   );
-};
+}
