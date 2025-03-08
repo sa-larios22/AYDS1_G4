@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
-const StaffProfile = () => {
+const UserAccount = () => {
   const { user, startUpdateUser } = useAuth();
   const [formData, setFormData] = useState({
     name: user?.name || "",
@@ -186,4 +186,4 @@ const styles = {
   },
 };
 
-export default StaffProfile;
+export default UserAccount;

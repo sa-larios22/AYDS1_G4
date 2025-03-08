@@ -30,10 +30,17 @@ export class TicketController {
     return this.ticketService.findAll(paginationDto);
   }
 
+  @Get('/user/orders')
+  findAllOrders() {
+    return this.ticketService.findAllOrders();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ticketService.findOne(+id);
   }
+
+  
 
   // ADMIN ACTIONS
 

@@ -25,6 +25,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import TextField from '@mui/material/TextField';
 import { Select, MenuItem as MuiMenuItem, FormControl, InputLabel } from '@mui/material';
+import { useAuth } from '../hooks';
 
 const ticketClasses = ["Económica", "Ejecutiva", "Primera Clase"];
 const paymentTypes = ["CASH", "CREDIT_CARD", "DEBIT_CARD"];
@@ -35,6 +36,8 @@ function CollapsibleTable() {
   const [departureDate, setDepartureDate] = useState('');
   const [departureHour, setDepartureHour] = useState('');
   const [paymentType, setPaymentType] = useState('CREDIT_CARD'); 
+
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchFlights()
@@ -47,8 +50,8 @@ function CollapsibleTable() {
 
   const handleFilter = () => {
     const filtered = tickets.filter((ticket) => {
-      const flightDate = ticket.flight.departure.split('T')[0]; 
-      const flightHour = ticket.flight.departure.split('T')[1].split(':').slice(0, 2).join(':'); 
+      const flightDate = ticket.departure.split('T')[0]; 
+      const flightHour = ticket.departure.split('T')[1].split(':').slice(0, 2).join(':'); 
 
       const matchesDate = departureDate ? flightDate === departureDate : true;
       const matchesHour = departureHour ? flightHour === departureHour : true;
@@ -60,25 +63,22 @@ function CollapsibleTable() {
   };
 
   const Row = (props) => {
+    const [quantity, setQuantity] = useState(1);
+
     const handleBuyTicket = async () => {
       const uniqueOrderId = `${String(row.id)}-${Date.now()}`;
       const userId = row.created_by; 
   
       const orderDetails = [
         {
-          quantity: 2, 
+          quantity: Number(quantity), 
           price: row.price,
           ticketId: row.id,
-        },
-        {
-          quantity: 1, 
-          price: row.price,
-          ticketId: row.id + 1, 
         }
       ];
   
       const postData = {
-        userId: userId, 
+        userId: user.id, 
         orderDetails: orderDetails,
       };
   
@@ -92,13 +92,28 @@ function CollapsibleTable() {
           },
           body: JSON.stringify(postData),
         });
-  
+
+        const orderResponse = await response.json()
+        console.log('response', orderResponse)
+
+        const payment = await fetch("http://localhost:3000/api/payments", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: row.price * 2, 
+            date: new Date().toISOString(), 
+            type: paymentType, 
+            orderId: orderResponse.id,
+          }),
+        });
+
         if (!response.ok) {
           throw new Error(`Error en la compra: ${response.statusText}`);
         }
   
-        const data = await response.json();
-        alert("Compra exitosa. ID de orden: " + data.id);
+        alert("Compra exitosa. ID de orden: " + orderResponse.id);
       } catch (error) {
         console.error("Error al procesar la compra:", error);
         alert("Error al realizar la compra");
@@ -120,8 +135,9 @@ function CollapsibleTable() {
       setMenuOpen(false);
     };
   
-    const flightDate = row.flight.departure.split('T')[0]; 
-    const flightHour = row.flight.departure.split('T')[1].split(':').slice(0, 2).join(':'); 
+    console.log("Fila:", row);
+    const flightDate = row.departure.split('T')[0]??'';
+    const flightHour = row.departure.split('T')[1].split(':').slice(0, 2).join(':')??'';
   
     return (
       <React.Fragment>
@@ -136,7 +152,7 @@ function CollapsibleTable() {
             </IconButton>
           </TableCell>
           <TableCell component="th" scope="row">
-            {row.flight.origin} - {row.flight.destination}
+            {row.origin} - {row.destination}
           </TableCell>
           <TableCell align="center">
             <ButtonGroup variant="contained" ref={anchorRef}>
@@ -170,6 +186,14 @@ function CollapsibleTable() {
                 </Grow>
               )}
             </Popper>
+          </TableCell>
+          <TableCell align="center">
+            <TextField
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              sx={{ width: 50 }}
+            />
           </TableCell>
           <TableCell align="center">{row.availableSeats}</TableCell>
           <TableCell align="right">
@@ -246,15 +270,23 @@ function CollapsibleTable() {
         <TextField
           label="Filtrar por Fecha"
           type="date"
+          name='Filtrar por Fecha'
           value={departureDate}
           onChange={(e) => setDepartureDate(e.target.value)}
-          sx={{ marginRight: 2 }}
+          sx={{
+            marginRight: 2,
+            width: 300,
+          }}
         />
         <TextField
           label="Filtrar por Hora"
           type="time"
           value={departureHour}
           onChange={(e) => setDepartureHour(e.target.value)}
+          sx={{
+            marginRight: 2,
+            width: 100,
+          }}
         />
         <Button onClick={handleFilter} variant="contained" sx={{ marginLeft: 2 }}>
           Filtrar
@@ -268,6 +300,7 @@ function CollapsibleTable() {
               <TableCell />
               <TableCell sx={{ fontWeight: 'bold', color: 'white' }}>Destino</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Tipo</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Cantidad</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Boletos Disponibles</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold', color: 'white' }}>Boleto</TableCell>
             </TableRow>

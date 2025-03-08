@@ -1,0 +1,410 @@
+/* StaffFlights.css */
+
+/* Estilos generales */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .title {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 2rem;
+  }
+  
+  .message {
+    background-color: #3498db;
+    color: white;
+    padding: 12px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .message.success {
+    background-color: #2ecc71;
+  }
+  
+  .message.error {
+    background-color: #e74c3c;
+  }
+  
+  .message.warning {
+    background-color: #f39c12;
+  }
+  
+  .loading {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    margin: 30px 0;
+  }
+  
+  /* Botones principales */
+  .buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .addButton {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .addButton:hover {
+    background-color: #27ae60;
+  }
+  
+  /* Botones de gestión */
+  .manageButton {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+  }
+  
+  .manageButton:hover {
+    background-color: #2980b9;
+  }
+  
+  /* Tabla de vuelos */
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .th {
+    background-color: #34495e;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .tr:hover {
+    background-color: #e5e5e5;
+  }
+  
+  .td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .select {
+    padding: 5px 10px;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    background-color: white;
+  }
+  
+  /* Estado de vuelos */
+  .status {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .status-scheduled {
+    background-color: #3498db;
+  }
+  
+  .status-at-gate {
+    background-color: #f39c12;
+  }
+  
+  .status-landed {
+    background-color: #2ecc71;
+  }
+  
+  .status-cancelled {
+    background-color: #e74c3c;
+  }
+  
+  .status-delayed {
+    background-color: #9b59b6;
+  }
+  
+  /* Botones de acción */
+  .assignButton {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.3s;
+  }
+  
+  .assignButton:hover {
+    background-color: #2980b9;
+  }
+  
+  .deleteButton {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.3s;
+  }
+  
+  .deleteButton:hover {
+    background-color: #c0392b;
+  }
+  
+  .deleteButton:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+  }
+  
+  /* Modales */
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .modalLarge {
+    max-width: 800px;
+  }
+  
+  .modalContent h2 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+  }
+  
+  .modalForm {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modalForm label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #34495e;
+  }
+  
+  .modalInput {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .modalButtons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  .saveButton {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .saveButton:hover {
+    background-color: #27ae60;
+  }
+  
+  .saveButton:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+  }
+  
+  .cancelButton {
+    background-color: #7f8c8d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .cancelButton:hover {
+    background-color: #6c7a7d;
+  }
+  
+  /* Tabla dentro de modal */
+  .tableWrapper {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  
+  .modalTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .modalTable th {
+    position: sticky;
+    top: 0;
+    background-color: #34495e;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    z-index: 10;
+  }
+  
+  .modalTable td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .modalTable tr:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .modalTable button {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .modalTable button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* Estados de puertas */
+  .gateStatusAvailable {
+    color: #27ae60;
+    font-weight: bold;
+  }
+  
+  .gateStatusAssigned {
+    color: #e67e22;
+    font-weight: bold;
+  }
+  
+  /* Detalles de vuelo */
+  .flightDetails {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .flightDetails p {
+    margin: 8px 0;
+    line-height: 1.5;
+  }
+  
+  .noItems {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  
+  /* Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .modalContent {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .message {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  /* Diseño responsive */
+  @media (max-width: 768px) {
+    .table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    
+    .buttonContainer {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .buttonContainer div {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+    
+    .addButton, .manageButton {
+      width: 100%;
+      margin-left: 0;
+    }
+    
+    .modalTable {
+      font-size: 0.9rem;
+    }
+    
+    .modalTable th, .modalTable td {
+      padding: 8px;
+    }
+    
+  }

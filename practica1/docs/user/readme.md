@@ -1,6 +1,6 @@
 # Práctica 1
 
-## Manual de Usuario
+## Manual de Usuario - Cambio de Moneda
 
 El Sistema de Gestión de Aeropuerto es una plataforma diseñada para facilitar la administración de vuelos, pasajeros, puertas de embarque y boletos. Su objetivo es mejorar la eficiencia operativa de un aeropuerto mediante una interfaz intuitiva y herramientas que permiten el registro, monitoreo y gestión de información clave.
 
