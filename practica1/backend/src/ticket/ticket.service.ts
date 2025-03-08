@@ -99,6 +99,51 @@ export class TicketService extends PrismaClient implements OnModuleInit {
   }
 
   // USER ACTIONS
+  async findAllOrders() {
+    const orders = await this.order.findMany({
+      include: {
+        user: true,
+        details: {
+          select: {
+            ticket: {
+              select: {
+                id: true,
+                type: true,
+                flight: {
+                  select: {
+                    id: true,
+                    origin: true,
+                    destination: true,
+                    departure: true,
+                    arrival: true,
+                    gate: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            price: true,
+            quantity: true
+          }
+        },
+        payment: {
+          select: {
+            id: true,
+            amount: true,
+            date: true,
+            type: true
+          }
+        }
+      }
+    });
+
+    return orders;
+  }
+
   async shop(createOrderDto: CreateOrderDto) {
     const { userId, orderDetails } = createOrderDto;
 
@@ -124,21 +169,29 @@ export class TicketService extends PrismaClient implements OnModuleInit {
             }
           }
         },
-        include: {
-          user: true,
+        select: {
+          id: true,
+          user: {
+            select: {
+              id: true,
+              lastname: true,
+              name: true
+            }
+          },
           details: {
             select: {
+              price: true,
+              quantity: true,
               ticket: {
                 select: {
                   id: true,
-                  type: true,
+                  type: true
                 }
-              },
-              price: true,
-              quantity: true
+              }
             }
           }
         }
+        
       });
       return order;
     } catch (error) {

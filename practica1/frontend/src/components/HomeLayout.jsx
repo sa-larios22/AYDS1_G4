@@ -81,16 +81,6 @@ export const HomeLayout = ({ children }) => {
                     <span style={styles.icon}>💵</span>Historial de Pagos
                   </NavLink>
                 </li>
-                <li style={styles.menuItem}>
-                  <NavLink
-                    to="/register"
-                    style={({ isActive }) =>
-                      isActive ? { ...styles.link, ...styles.activeLink } : styles.link
-                    }
-                  >
-                    <span style={styles.icon}>➕</span>Crear usuario
-                  </NavLink>
-                </li>
               </>
             )}
 
@@ -99,7 +89,7 @@ export const HomeLayout = ({ children }) => {
               <>
                 <li style={styles.menuItem}>
                   <NavLink
-                    to="/client"
+                    to="/client/profile"
                     style={({ isActive }) =>
                       isActive ? { ...styles.link, ...styles.activeLink } : styles.link
                     }
@@ -127,6 +117,16 @@ export const HomeLayout = ({ children }) => {
                     <span style={styles.icon}>📜</span>Historial de Compras
                   </NavLink>
                 </li>
+                <li style={styles.menuItem}>
+                  <NavLink
+                    to="/client/buy"
+                    style={({ isActive }) =>
+                      isActive ? { ...styles.link, ...styles.activeLink } : styles.link
+                    }
+                  >
+                  <span style={styles.icon}>💵</span>Comprar Boleto
+                  </NavLink>
+                </li>
               </>
             )}
 
@@ -135,7 +135,7 @@ export const HomeLayout = ({ children }) => {
               <>
                 <li style={styles.menuItem}>
                   <NavLink
-                    to="/staff"
+                    to="/staff/profile"
                     style={({ isActive }) =>
                       isActive ? { ...styles.link, ...styles.activeLink } : styles.link
                     }
